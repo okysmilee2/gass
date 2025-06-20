@@ -34,7 +34,7 @@ dateFromServer=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Dat
 biji=$(date +"%Y-%m-%d" -d "$dateFromServer")
 
 # URL repository
-REPO="https://raw.githubusercontent.com/okysmilee/gass/main/"
+REPO="https://raw.githubusercontent.com/okysmilee2/gass/main/"
 pwadm="Dswara123"
 # Download file dan proses
 
