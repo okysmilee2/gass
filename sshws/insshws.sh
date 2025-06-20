@@ -21,9 +21,9 @@ fi
 # Link Hosting Kalian
 sudo apt install python3
 
-wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/okysmilee/gass/main/sshws/ws"
+wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/okysmilee2/gass/main/sshws/ws"
 chmod +x /usr/local/bin/ws
-wget -O /usr/local/bin/config.conf "https://raw.githubusercontent.com/okysmilee/gass/main/sshws/config.conf"
+wget -O /usr/local/bin/config.conf "https://raw.githubusercontent.com/okysmilee2/gass/main/sshws/config.conf"
 
 # Installing Service
 cat > /etc/systemd/system/ws.service << END
