@@ -1,7 +1,7 @@
 #!/bin/bash
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
 sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
-REPO="https://raw.githubusercontent.com/okysmilee/gass/main/"
+REPO="https://raw.githubusercontent.com/okysmilee2/gass/main/"
 function CEKIP () {
 MYIP=$(curl -sS ipv4.icanhazip.com)
 IPVPS=$(curl -sS https://raw.githubusercontent.com/okysmilee2/permission/main/ip | grep $MYIP | awk '{print $4}')
