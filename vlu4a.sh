@@ -74,8 +74,6 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local >/d
 apt update -y
 apt upgrade -y
 apt dist-upgrade -y
-curl -s ipinfo.io/city >>/etc/xray/city
-    curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
 clear
 clear && clear && clear
 clear;clear;clear

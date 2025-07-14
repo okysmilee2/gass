@@ -129,6 +129,8 @@ install_ssl(){
 }
 
 # install nginx
+curl -s ipinfo.io/city >>/etc/xray/city
+curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
 apt install -y nginx
 cd
 rm -fr /etc/nginx/sites-enabled/default
