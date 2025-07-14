@@ -1,4 +1,4 @@
-# Autoscript XrayCol
+# Autoscript Premium
 
 ## Tested only on Ubuntu 20.04 <br>
   
@@ -29,9 +29,7 @@ aslinya script bawaan ada fitur ssh, namun saya hapus karena memang ga idup webs
 ✅ XRAY TROJAN TCP TLS 443<br>
 ✅ TROJAN GO WS 8080<br>
 <br>
-Ga punya domain? PM ane aja :<a href="https://t.me/Tereza11" target=”_blank”><img src="https://img.shields.io/static/v1?style=for-the-badge&logo=Telegram&label=Telegram&message=Click%20Here&color=blue"></a><br>
-<br>
-## GRATIS
-![logo](https://github.com/okysmilee2/gass/raw/main/2023_03_26_10_21_02.jpg)
+
+
 
 *ada sedikit harga untuk setiap perbuatan*
