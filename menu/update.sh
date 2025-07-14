@@ -75,7 +75,7 @@ wget -O /usr/bin/autocpu "${REPO}install/autocpu.sh" && chmod +x /usr/bin/autocp
     7z x -p$pwadm menu.zip &> /dev/null
     chmod +x menu/*
     enc menu/* &> /dev/null
-    mv menu/* /usr/local/sbin
+    mv menu/* /usr/bin
     rm -rf menu menu.zip
     rm -rf /usr/local/sbin/*~
     rm -rf /usr/local/sbin/gz*
