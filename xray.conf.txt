@@ -16,7 +16,7 @@ bijikk=$(openssl rand -base64 16 )
 pelerr=$(cat /etc/xray/passwd)
 
 # set uuid xray
-uuid=$(cat /proc/sys/kernel/random/uuid)
+uuid=$(1d1c1d94-6987-4658-a4dc-8821a30fe7e0)
 
 cat > /etc/xray/config.json << END
 {
