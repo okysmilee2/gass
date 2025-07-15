@@ -1,12 +1,12 @@
 #!/bin/bash
-trojanws=$((RANDOM + 10000))
-ssws=$((RANDOM + 10000))
-ssgrpc=$((RANDOM + 10000))
-vless=$((RANDOM + 10000))
-vlessgrpc=$((RANDOM + 10000))
-vmess=$((RANDOM + 10000))
-vmessgrpc=$((RANDOM + 10000))
-trojangrpc=$((RANDOM + 10000))
+trojanws=24969
+ssws=37689
+ssgrpc=41109
+vless=28176
+vlessgrpc=10987
+vmess=24725
+vmessgrpc=42148
+trojangrpc=10297
 # xray config
 # seting ulang json
 #mv -f /etc/xray/config.json /etc/xray/config.json.bak
