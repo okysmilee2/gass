@@ -124,7 +124,7 @@ wget -q -O ins-xray.sh https://raw.githubusercontent.com/okysmilee2/gass/main/in
 sleep 1
 wget -q -O update.sh https://raw.githubusercontent.com/okysmilee2/gass/main/update.sh && chmod +x update.sh && ./update.sh
 sleep 1
-wget -q -O update.sh https://raw.githubusercontent.com/okysmilee2/gass/main/bbr.sh && chmod +x bbr.sh && ./bbr.sh
+wget -q -O bbr.sh https://raw.githubusercontent.com/okysmilee2/gass/main/bbr.sh && chmod +x bbr.sh && ./bbr.sh
 sleep 1
 IP=$(echo $SSH_CLIENT | awk '{print $1}')
 TMPFILE='/tmp/ipinfo-$DATE_EXEC.txt'
