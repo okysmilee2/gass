@@ -142,17 +142,17 @@ DATE_EXEC="$(date "+%d %b %Y %H:%M")"
 CITY=$(cat $TMPFILE | jq '.city' | sed 's/"//g')
 REGION=$(cat $TMPFILE | jq '.region' | sed 's/"//g')
 COUNTRY=$(cat $TMPFILE | jq '.country' | sed 's/"//g')
-curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chatid" -d text="$IPVPS domain $domain telah install XrayCol pada $DATE_EXEC di $CITY, $REGION via $ORG" > /dev/null 2>&1
+curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chatid" -d text="$IPVPS domain $domain telah install Xrayonly pada $DATE_EXEC di $CITY, $REGION via $ORG" > /dev/null 2>&1
 clear
 cat > /etc/cron.d/xp_otm <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-2 0 * * * root /usr/bin/xp
+2 0 * * * root /usr/local/sbin/xp
 END
 cat > /etc/cron.d/cl_otm <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-2 1 * * * root /usr/bin/clearlog
+2 1 * * * root /usr/local/sbin/clearlog
 END
 echo "59 * * * * root killall /bin/bash /usr/bin/menu" >> /etc/crontab
 cat > /home/re_otm <<-END
@@ -238,18 +238,28 @@ echo -e ""
 echo ""
 echo "" | tee -a log-install.txt
 rm -f /root/jangut.sh
-rm -f /root/set-br.sh
+rm -f /root/bbr.sh
 rm -f /root/ins-xray.sh
-rm -f /root/setup.sh
+rm -f /root/vlu4a.sh
 rm -f /root/domain
 rm -f /root/update.sh
 rm -f /root/xraymode.sh
 rm -f /root/xray.conf
 history -c
-secs_to_human "$(($(date +%s) - ${start}))"
-sudo hostnamectl set-hostname $username
-echo -e "${green} Script Successfull Installed"
-echo ""
-read -p "$( echo -e "Press ${YELLOW}[ ${NC}${YELLOW}Enter${NC} ${YELLOW}]${NC} For reboot") "
+sleep 3
+echo  ""
+cd
+iinfo
+echo -e "${green}┌────────────────────────────────────────────┐${NC}"
+echo -e "${green}│  Install SCRIPT SELESAI..                  │${NC}"
+echo -e "${green}└────────────────────────────────────────────┘${NC}"
+echo  ""
+sleep 4
+echo -e "[ ${yell}WARNING${NC} ] Do you want to reboot now ? (y/n)? "
+read answer
+if [ "$answer" == "${answer#[Yy]}" ] ;then
+exit 0
+else
 reboot
+fi
 
