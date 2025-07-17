@@ -74,6 +74,9 @@ sed -i '$ i\echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6' /etc/rc.local >/d
 apt update -y
 apt upgrade -y
 apt dist-upgrade -y
+apt install lolcat -y
+apt install wget -y
+apt install curl -y
 clear
 clear && clear && clear
 clear;clear;clear
