@@ -3,8 +3,8 @@ name="$1"
 domain_input="$2"
 if [[ -z "$name" || -z "$domain_input" ]]; then
   echo -e "${RED}[ERROR]${NC} Penggunaan: $0 <nama> <domain|random>"
-  echo -e "Contoh: Install.sh Newbie_Store random"
-  echo -e "        Install.sh Newbie_Store domainkeren.com"
+  echo -e "Contoh: main.sh tokodswara random"
+  echo -e "        main.sh tokodswara domainmu.com"
   exit 1
 fi
 export DEBIAN_FRONTEND=noninteractive
@@ -63,8 +63,8 @@ else
     echo -e "  \033[0;33m💡 Beli izin resmi hanya dari Admin!\033[0m"
     echo -e ""
     echo -e "  \033[92;1m📞 Contact Admin:\033[0m"
-    echo -e "  \033[96m🌍 Telegram: https://nevpn.site\033[0m"
-    echo -e "  \033[96m📱 WhatsApp: https://whatsapp.nevpn.site\033[0m"
+    echo -e "  \033[96m🌍 Telegram: https://\033[0m"
+    echo -e "  \033[96m📱 WhatsApp: https://\033[0m"
     echo -e ""
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
     ATTEMPTS=$(cat "$ILLEGAL_FILE")
@@ -82,7 +82,7 @@ export IP=$( curl -sL ip.dekaa.my.id )
 function Banner_Newbie {
 clear
 echo -e "${BLUE}----------------------------------------------------------"
-echo -e "  Welcome To NEWBIE VPN Script Installer Stable Edition "
+echo -e "  Welcome To TOKO DSWARA Script Installer Stable Edition "
 echo -e "     This Will Quick Setup VPN Server On Your Server"
 echo -e "         Auther : TOKODSWARA [ DSWARA ]"
 echo -e "           © Recode By Toko Dswara [ 2026 ]"
