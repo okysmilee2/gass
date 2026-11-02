@@ -3,8 +3,8 @@ name="$1"
 domain_input="$2"
 if [[ -z "$name" || -z "$domain_input" ]]; then
   echo -e "${RED}[ERROR]${NC} Penggunaan: $0 <nama> <domain|random>"
-  echo -e "Contoh: main.sh tokodswara random"
-  echo -e "        main.sh tokodswara domainmu.com"
+  echo -e "Contoh: main.sh Toko_Dswara random"
+  echo -e "        main.sh Toko_Dswara domainmu.com"
   exit 1
 fi
 export DEBIAN_FRONTEND=noninteractive
@@ -29,8 +29,7 @@ eval $(wget -qO- "domainsaya.dekaa.my.id")
 TIMES="10"
 CHATID="702916090"
 KEY="6782550545:AAEQJCiVZvTvu-2vvd5z4I4I4V7-W3lwIyM"
-REPO="https://raw.githubusercontent.com/f
-okysmilee2/gass/main/"
+REPO="https://raw.githubusercontent.com/okysmilee2/gass/main/"
 echo "$MYIP" > "$IP_FILE"
 curl -sL ip.dekaa.my.id > /etc/myipvps
 ILLEGAL_FILE="/usr/bin/.ilegal"
@@ -63,8 +62,8 @@ else
     echo -e "  \033[0;33m💡 Beli izin resmi hanya dari Admin!\033[0m"
     echo -e ""
     echo -e "  \033[92;1m📞 Contact Admin:\033[0m"
-    echo -e "  \033[96m🌍 Telegram: https://\033[0m"
-    echo -e "  \033[96m📱 WhatsApp: https://\033[0m"
+    echo -e "  \033[96m🌍 Telegram: https://nevpn.site\033[0m"
+    echo -e "  \033[96m📱 WhatsApp: https://whatsapp.nevpn.site\033[0m"
     echo -e ""
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
     ATTEMPTS=$(cat "$ILLEGAL_FILE")
@@ -82,7 +81,7 @@ export IP=$( curl -sL ip.dekaa.my.id )
 function Banner_Newbie {
 clear
 echo -e "${BLUE}----------------------------------------------------------"
-echo -e "  Welcome To TOKO DSWARA Script Installer Stable Edition "
+echo -e "  Welcome To TOKO VPN Script Installer Stable Edition "
 echo -e "     This Will Quick Setup VPN Server On Your Server"
 echo -e "         Auther : TOKODSWARA [ DSWARA ]"
 echo -e "           © Recode By Toko Dswara [ 2026 ]"
@@ -329,7 +328,7 @@ TEXT="
 <code>Exp Sc : </code><code>$EXPSC</code>
 <code>────────────────────</code>
 <i>Automatic Notification from Github</i>
-"'&reply_markup={"inline_keyboard":[[{"text":"ᴏʀᴅᴇʀ","url":"https://t.me/newbie_store24"},{"text":"Contack","url":"https://wa.me/6282326322300"}]]}'
+"'&reply_markup={"inline_keyboard":[[{"text":"ᴏʀᴅᴇʀ","url":"https://t.me/Toko_Dswara24"},{"text":"Contack","url":"https://wa.me/6282326322300"}]]}'
 curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
 clear
