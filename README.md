@@ -18,7 +18,7 @@
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update && apt install -y bzip2 gzip coreutils screen curl && wget https://raw.githubusercontent.com/okysmilee2/gass/main/vlu4a.sh && chmod +x vlu4a.sh && ./vlu4a.sh
   ```
 ### INSTALL SCRIPT NEW
-<pre><code>apt update -y && apt upgrade -y && apt install -y wget curl git jq screen && wget -q https://raw.githubusercontent.com/f4-izz/vip/main/main.sh && chmod +x main.sh && ./main.sh
+<pre><code>apt update -y && apt upgrade -y && apt install -y wget curl git jq screen && wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/main.sh && chmod +x main.sh && ./main.sh
 </code></pre>
 
 [ XRAY SERVICES ] <br>
