@@ -302,7 +302,7 @@ function pasang_domain() {
         echo -e "${green}Menggunakan random domain: $host1${NC}"
 
         # Proses pointing subdomain
-        wget ${REPO}install/pointing.sh && chmod +x pointing.sh && ./pointing.sh
+        wget https://raw.githubusercontent.com/okysmilee2/gass/main/install/pointing.sh && chmod +x pointing.sh && ./pointing.sh
         rm -f /root/pointing.sh
     else
         host1="$domain_input"
@@ -422,7 +422,7 @@ domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
 chown www-data.www-data $domainSock_dir
 #latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
 bash -c "$(curl -fsSL https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install --version v24.11.30
-wget -O /etc/xray/config.json "${REPO}install/newbie.json" >/dev/null 2>&1
+wget -O /etc/xray/config.json "https://raw.githubusercontent.com/okysmilee2/gass/main/install/newbie.json" >/dev/null 2>&1
 cat > /etc/systemd/system/runn.service <<EOF
 [Unit]
 Description=casper9
@@ -444,11 +444,11 @@ print_success "Core Xray 24.11.30 Latest Version"
 curl -s ipinfo.io/city?token=75082b4831f909 > /etc/xray/city
 curl -s ipinfo.io/org?token=75082b4831f909  | cut -d " " -f 2-10 > /etc/xray/isp
 print_install "Memasang Konfigurasi Packet"
-wget -O /etc/haproxy/haproxy.cfg "${REPO}install/haproxy.cfg" >/dev/null 2>&1
-wget -O /etc/nginx/conf.d/xray.conf "${REPO}install/xray.conf" >/dev/null 2>&1
+wget -O /etc/haproxy/haproxy.cfg "https://raw.githubusercontent.com/okysmilee2/gass/main/install/haproxy.cfg" >/dev/null 2>&1
+wget -O /etc/nginx/conf.d/xray.conf "https://raw.githubusercontent.com/okysmilee2/gass/main/install/xray.conf" >/dev/null 2>&1
 sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
 sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
-curl ${REPO}install/nginx.conf > /etc/nginx/nginx.conf
+curl https://raw.githubusercontent.com/okysmilee2/gass/main/install/nginx.conf > /etc/nginx/nginx.conf
 cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
 rm -rf /etc/systemd/system/xray.service.d
 cat >/etc/systemd/system/xray.service <<EOF
@@ -469,12 +469,19 @@ LimitNOFILE=1000000
 [Install]
 WantedBy=multi-user.target
 EOF
+mkdir -p /var/log/xray
+touch /var/log/xray/access.log
+chown -R www-data:www-data /var/log/xray
+chmod 755 /var/log/xray
+chmod 644 /var/log/xray/access.log
+systemctl daemon-reload
+systemctl restart xray
 print_success "Konfigurasi Packet"
 }
 function ssh(){
 :
 print_install "Memasang Password SSH"
-wget -O /etc/pam.d/common-password "${REPO}install/passwordssh"
+wget -O /etc/pam.d/common-password "https://raw.githubusercontent.com/okysmilee2/gass/main/install/passwordssh"
 chmod +x /etc/pam.d/common-password
 DEBIAN_FRONTEND=noninteractive dpkg-reconfigure keyboard-configuration
 debconf-set-selections <<<"keyboard-configuration keyboard-configuration/altgr select The default for the keyboard layout"
@@ -522,9 +529,9 @@ print_success "Password SSH"
 function udp_mini(){
 :
 print_install "Memasang Service limit Quota"
-wget -q ${REPO}install/limit.sh && chmod +x limit.sh && ./limit.sh
+wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/install/limit.sh && chmod +x limit.sh && ./limit.sh
 cd
-wget -q -O /usr/bin/limit-ip "${REPO}install/limit-ip"
+wget -q -O /usr/bin/limit-ip "https://raw.githubusercontent.com/okysmilee2/gass/main/install/limit-ip"
 chmod +x /usr/bin/*
 cd /usr/bin
 sed -i 's/\r//' limit-ip
@@ -572,11 +579,11 @@ EOF
 systemctl daemon-reload
 #systemctl restart trip
 #systemctl enable trip
-wget -O /usr/sbin/badvpn "${REPO}install/badvpn" >/dev/null 2>&1
+wget -O /usr/sbin/badvpn "https://raw.githubusercontent.com/okysmilee2/gass/main/install/badvpn" >/dev/null 2>&1
 chmod +x /usr/sbin/badvpn > /dev/null 2>&1
-wget -q -O /etc/systemd/system/badvpn1.service "${REPO}install/badvpn1.service" >/dev/null 2>&1
-wget -q -O /etc/systemd/system/badvpn2.service "${REPO}install/badvpn2.service" >/dev/null 2>&1
-wget -q -O /etc/systemd/system/badvpn3.service "${REPO}install/badvpn3.service" >/dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn1.service "https://raw.githubusercontent.com/okysmilee2/gass/main/install/badvpn1.service" >/dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn2.service "https://raw.githubusercontent.com/okysmilee2/gass/main/install/badvpn2.service" >/dev/null 2>&1
+wget -q -O /etc/systemd/system/badvpn3.service "https://raw.githubusercontent.com/okysmilee2/gass/main/install/badvpn3.service" >/dev/null 2>&1
 systemctl daemon-reload
 systemctl disable badvpn1 badvpn2 badvpn3
 systemctl stop badvpn1 badvpn2 badvpn3
@@ -587,7 +594,7 @@ print_success "files Quota Service"
 function ssh_slow(){
 :
 print_install "Memasang modul SlowDNS Server"
-wget -q "${REPO}install/installsl.sh" >/dev/null 2>&1
+wget -q "https://raw.githubusercontent.com/okysmilee2/gass/main/install/instasl.sh" >/dev/null 2>&1
 chmod +x installsl.sh
 ./installsl.sh | tee /root/install.log
 :
@@ -598,7 +605,7 @@ function ins_SSHD(){
 :
 print_install "Memasang SSHD"
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-sed -i '/Port 22/a Port 51443' /etc/ssh/sshd_config
+sed -i '/Port 22/a Port 2223' /etc/ssh/sshd_config
 sed -i '/Port 22/a Port 58080' /etc/ssh/sshd_config
 sed -i '/Port 22/a Port 22' /etc/ssh/sshd_config
 echo "Banner /etc/issue.net" >>/etc/ssh/sshd_config
@@ -610,7 +617,7 @@ function ins_dropbear(){
 :
 print_install "Menginstall Dropbear"
 apt-get install dropbear -y 
-wget -q -O /etc/default/dropbear "${REPO}install/dropbear"
+wget -q -O /etc/default/dropbear "https://raw.githubusercontent.com/okysmilee2/gass/main/install/dropbear"
 chmod +x /etc/default/dropbear
 /etc/init.d/dropbear restart
 /etc/init.d/dropbear status
@@ -641,7 +648,7 @@ print_success "Vnstat"
 function ins_openvpn(){
 :
 print_install "Menginstall OpenVPN"
-wget ${REPO}install/vpn.sh &&  chmod +x vpn.sh && ./vpn.sh
+wget https://raw.githubusercontent.com/okysmilee2/gass/main/install/vpn.sh &&  chmod +x vpn.sh && ./vpn.sh
 print_success "OpenVPN"
 }
 function ins_backup(){
@@ -657,7 +664,7 @@ sudo make install
 cd
 rm -rf wondershaper
 echo > /home/files
-wget -q ${REPO}install/ipserver && chmod +x ipserver && ./etc/ipserver
+wget -q -O /etc/ipserver "https://raw.githubusercontent.com/okysmilee2/gass/main/install/ipserver" && bash /etc/ipserver
 print_success "Backup Server"
 }
 :
@@ -677,7 +684,7 @@ sed -i '$ i\/swapfile      swap swap   defaults    0 0' /etc/fstab
 chronyd -q 'server 0.id.pool.ntp.org iburst'
 chronyc sourcestats -v
 chronyc tracking -v
-wget ${REPO}install/bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
+wget https://raw.githubusercontent.com/okysmilee2/gass/main/install/bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
 print_success "Swap 1 G"
 }
 function ins_Fail2ban(){
@@ -690,14 +697,14 @@ else
 mkdir /usr/local/ddos
 fi
 :
-wget -O /etc/issue.net "${REPO}install/issue.net"
-wget -q ${REPO}install/setrsyslog.sh && chmod +x setrsyslog.sh && ./setrsyslog.sh
+wget -O /etc/issue.net "https://raw.githubusercontent.com/okysmilee2/gass/main/install/issue.net"
+wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/install/setrsyslog.sh && chmod +x setrsyslog.sh && ./setrsyslog.sh
 print_success "Fail2ban"
 }
 function ins_epro(){
 :
 print_install "Menginstall ePro WebSocket Proxy"
-wget -q ${REPO}install/insshws.sh && chmod +x insshws.sh && ./insshws.sh
+wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/install/insshws.sh && chmod +x insshws.sh && ./insshws.sh
 wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
 wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
 iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
@@ -832,7 +839,7 @@ print_success "All Packet"
 function menu(){
 :
 print_install "Memasang Menu Packet"
-wget ${REPO}update.sh && chmod +x update.sh && ./update.sh
+wget https://raw.githubusercontent.com/okysmilee2/gass/main/update.sh && chmod +x update.sh && ./update.sh
 }
 function profile(){
 :
@@ -861,7 +868,7 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 */5 * * * * root /usr/bin/autocpu
 END
-wget -O /usr/bin/autocpu "${REPO}install/autocpu.sh" && chmod +x /usr/bin/autocpu
+wget -O /usr/bin/autocpu "https://raw.githubusercontent.com/okysmilee2/gass/main/install/autocpu.sh" && chmod +x /usr/bin/autocpu
 cat >/etc/cron.d/xp_sc <<-END
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
@@ -1044,4 +1051,4 @@ echo -e "\033[92m      INSTALL SUCCES      \033[0m"
 echo -e "\033[96m==========================\033[0m"
 echo -e ""
 sleep 2
-reboot
+menu
