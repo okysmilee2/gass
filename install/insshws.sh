@@ -21,23 +21,25 @@ fi
 # Link Hosting Kalian
 sudo apt install python3
 
-wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/okysmilee2/gass/main/install/ws"
-wget -O /usr/local/bin/config.conf "https://raw.githubusercontent.com/okysmilee2/gass/main/install/config.conf"
+wget -O /usr/local/bin/ws "https://raw.githubusercontent.com/https://raw.githubusercontent.com/okysmilee2/gass/main//ws"
+wget -O /usr/local/bin/config.conf "https://raw.githubusercontent.com/https://raw.githubusercontent.com/okysmilee2/gass/main//config.conf"
 chmod +x /usr/local/bin/ws
 
 # Installing Service
 cat > /etc/systemd/system/ws.service << END
 [Unit]
-Description=Proxy Mod By Newbie Store 
-Documentation=https://t.me/newbie_store24
-After=network.target nss-lookup.target
+Description=WebSocket E-Pro V2.3 By Newbie Store
+Documentation=https://github.com/diah082
+After=syslog.target network-online.target
 
 [Service]
-Type=simple
 User=root
 NoNewPrivileges=true
-ExecStart=/usr/local/bin/ws -f /usr/local/bin/config.conf
+ExecStart=/usr/bin/ws -f /usr/bin/config.conf
 Restart=on-failure
+RestartPreventExitStatus=23
+LimitNPROC=65535
+LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target
