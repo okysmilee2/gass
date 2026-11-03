@@ -8,8 +8,8 @@ IZIN_URL="https://raw.githubusercontent.com/okysmilee2/permission/main/ip"
 IPVPS=$(curl -s https://ipv4.icanhazip.com)
 SCREEN_NAME="install_${NAMA}"
 if screen -ls | grep -q "\.install_"; then
-    for PID in $(pgrep -f "SCREEN.*main.sh"); do
-        if ps -p $PID -o args= | grep -q "/root/main.sh"; then
+    for PID in $(pgrep -f "SCREEN.*setup.sh"); do
+        if ps -p $PID -o args= | grep -q "/root/setup.sh"; then
             echo "⛔ Install.sh masih berjalan di screen. Tidak boleh menjalankan lebih dari satu instance." | tee -a "$LOGFILE"
             exit 1
         fi
@@ -34,11 +34,11 @@ cek_izin() {
 # === Jalankan pengecekan izin ===
 cek_izin
 DEBIAN_FRONTEND=noninteractive apt install -y screen jq speedtest-cli wget curl openssh-server | tee -a ${LOGFILE}
-if [[ ! -f /root/main.sh ]]; then
-    wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/main.sh -O /root/main.sh
-    chmod +x /root/main.sh
+if [[ ! -f /root/setup.sh ]]; then
+    wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/setup.sh -O /root/setup.sh
+    chmod +x /root/setup.sh
 fi
-screen -S "${SCREEN_NAME}" -dm bash -c "export DEBIAN_FRONTEND=noninteractive; (echo -e '${NAMA}\n1\n${DOMAIN}'; yes y) | /root/main.sh"
+screen -S "${SCREEN_NAME}" -dm bash -c "export DEBIAN_FRONTEND=noninteractive; (echo -e '${NAMA}\n1\n${DOMAIN}'; yes y) | /root/setup.sh"
 
 echo "✅ Proses instalasi untuk $NAMA dimulai di screen: ${SCREEN_NAME}"
 echo "ℹ️ Lihat log: screen -r ${SCREEN_NAME}  atau cek ${LOGFILE}"
