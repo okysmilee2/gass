@@ -38,7 +38,7 @@ mkdir -p "$DEST"
 cp -f /tmp/menu-extracted/menu/* "$DEST/"
 
 # Self-update: pastikan versi terbaru script ini ikut tersebar ke VPS lama
-wget -qO "$DEST/update-scripts.sh" "https://raw.githubusercontent.com/okysmilee2/gass/main/update1.sh" >/dev/null 2>&1 || true
+wget -qO "$DEST/update1.sh" "https://raw.githubusercontent.com/okysmilee2/gass/main/update1.sh" >/dev/null 2>&1 || true
 chmod +x "$DEST/update1.sh" 2>/dev/null || true
 
 rm -rf /tmp/update.zip /tmp/menu-extracted
