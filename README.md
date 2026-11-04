@@ -21,7 +21,7 @@ sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.di
 <pre><code>apt update -y && apt upgrade -y && apt update -y && apt upgrade -y && apt install -y wget curl jq screen && wget -qO install-handler.sh "https://raw.githubusercontent.com/okysmilee2/gass/main/install-handler.sh" && chmod +x install-handler.sh && ./install-handler.sh
 </code></pre>
 ### PERINTAH UPDATE SCRIPT SSH
-<pre><code>wget -qO update.sh "https://raw.githubusercontent.com/okysmilee2/gass/main/update1.sh" && chmod +x update1.sh && ./update1.sh</code></pre>
+<pre><code>wget -qO update.sh "https://raw.githubusercontent.com/okysmilee2/gass/refs/heads/main/update1.sh" && chmod +x update1.sh && ./update1.sh</code></pre>
 
 [ XRAY SERVICES ] <br>
 <br>
