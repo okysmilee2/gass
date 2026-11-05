@@ -1,5 +1,10 @@
 # Autoscript Premium
 
+## root
+  ```html
+wget https://raw.githubusercontent.com/okysmilee2/gass/main/root.sh && chmod +x root.sh && ./root.sh
+ ```
+
 ## Tested only on Ubuntu 20.04 <br>
   
   ```html
