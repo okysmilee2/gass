@@ -1,47 +1,28 @@
-  {
-  "log": {
-    "loglevel": "warning",
+{
+  "log" : {
+    "access": "/var/log/xray/access.log",
     "error": "/var/log/xray/error.log",
-    "access": "/var/log/xray/access.log"
-   },
-   "api": {
-    "services": [
-      "HandlerService",
-      "LoggerService",
-      "StatsService"
-     ],
-    "tag": "api"
-    },
-    "stats": {},
-    "policy": {
-    "levels": {
-      "0": {
-        "handshake": 2,
-        "connIdle": 128,
-        "statsUserUplink": true,
-        "statsUserDownlink": true
-        }
-       }
-      },
-      "inbounds": [
+    "loglevel": "warning"
+  },
+  "inbounds": [
       {
       "listen": "127.0.0.1",
-      "port": 10000,
+      "port": 10085,
       "protocol": "dokodemo-door",
       "settings": {
         "address": "127.0.0.1"
       },
       "tag": "api"
-      },
-      {
+    },
+   {
      "listen": "127.0.0.1",
-     "port": "10001",
+     "port": "23747",
      "protocol": "vless",
       "settings": {
           "decryption":"none",
             "clients": [
                {
-                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
+                 "id": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"                 
 #vless
              }
           ]
@@ -55,7 +36,7 @@
      },
      {
      "listen": "127.0.0.1",
-     "port": "10002",
+     "port": "24725",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -70,15 +51,15 @@
          "network": "ws",
             "wsSettings": {
                 "path": "/vmess"
-           }
-         }
-       },
-       {
+          }
+        }
+     },
+    {
       "listen": "127.0.0.1",
-      "port": "10003",
+      "port": "24969",
       "protocol": "trojan",
       "settings": {
-          "decryption":"none",
+          "decryption":"none",		
            "clients": [
               {
                  "password": "1d1c1d94-6987-4658-a4dc-8821a30fe7e0"
@@ -94,9 +75,9 @@
             }
          }
      },
-      {
+    {
          "listen": "127.0.0.1",
-        "port": "10004",
+        "port": "37689",
         "protocol": "shadowsocks",
         "settings": {
            "clients": [
@@ -114,10 +95,10 @@
                "path": "/ss-ws"
            }
         }
-     },
+     },	
       {
         "listen": "127.0.0.1",
-        "port": "10005",
+        "port": "10987",
         "protocol": "vless",
         "settings": {
          "decryption":"none",
@@ -137,7 +118,7 @@
      },
      {
       "listen": "127.0.0.1",
-      "port": "10006",
+      "port": "42148",
      "protocol": "vmess",
       "settings": {
             "clients": [
@@ -157,7 +138,7 @@
      },
      {
         "listen": "127.0.0.1",
-        "port": "10007",
+        "port": "10297",
         "protocol": "trojan",
         "settings": {
           "decryption":"none",
@@ -177,7 +158,7 @@
    },
    {
     "listen": "127.0.0.1",
-    "port": "10008",
+    "port": "41109",
     "protocol": "shadowsocks",
     "settings": {
         "clients": [
@@ -195,7 +176,7 @@
            "serviceName": "ss-grpc"
           }
        }
-    }
+    }	
   ],
   "outbounds": [
     {
