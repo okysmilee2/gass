@@ -22,6 +22,21 @@ wget https://raw.githubusercontent.com/okysmilee2/gass/main/root.sh && chmod +x 
   ```html
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update && apt install -y bzip2 gzip coreutils screen curl && wget https://raw.githubusercontent.com/okysmilee2/gass/main/vlu4a.sh && chmod +x vlu4a.sh && ./vlu4a.sh
   ```
+### fix xray only
+  ```html
+mkdir -p /var/log/xray
+touch /var/log/xray/access.log
+chown -R www-data:www-data /var/log/xray
+chmod 755 /var/log/xray
+chmod 644 /var/log/xray/access.log
+systemctl daemon-reload
+systemctl restart xray
+
+nginx -t
+systemctl reload nginx
+ ```
+
+
 ### INSTALL SCRIPT NEW XRAY+SSH
 ### INSTALL SCRIPT TAMBAHKAN NAMA SCRIPT DAN DOMAIN KAMU SETELAH ./setup.sh UNTUK MENJALAKAN INSTALL
 ### CONTOH PENULISAN DI AKHIR [ chmod x+ setup.sh && ./setup.sh TokoDswara DOMAINKalian.COM ]
