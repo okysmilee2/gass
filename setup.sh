@@ -380,8 +380,7 @@ mkdir -p /etc/limit/vless
 mkdir -p /etc/limit/trojan
 mkdir -p /etc/limit/ssh
 mkdir -p /etc/github
-mkdir -p /etc/traffic
-mkdir -p /etc/kata_mutiara
+touch /etc/traffic
 chmod +x /var/log/xray
 touch /etc/xray/domain
 touch /var/log/xray/access.log
@@ -577,9 +576,9 @@ print_success "files Quota Service"
 function ssh_slow(){
 clear
 print_install "Memasang modul SlowDNS Server"
-wget -q "${REPO}install/installsl.sh" >/dev/null 2>&1
-chmod +x installsl.sh
-./installsl.sh | tee /root/install.log
+#wget -q "${REPO}install/installsl.sh" >/dev/null 2>&1
+#chmod +x installsl.sh
+#./installsl.sh | tee /root/install.log
 clear
 print_success "SlowDNS"
 }
