@@ -12,7 +12,7 @@
  ```
 ## Pastikan Semua Port Sudah di Buka
 
-## Installation Link<br>
+## Installation SCRIPT XRAY-ONLY<br>
 
   ```html
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update && apt install -y bzip2 gzip coreutils screen curl && wget https://raw.githubusercontent.com/okysmilee2/gass/main/vlu4a.sh && chmod +x vlu4a.sh && ./vlu4a.sh
