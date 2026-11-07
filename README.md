@@ -39,9 +39,12 @@ systemctl reload nginx
 
 ### INSTALL SCRIPT NEW XRAY+SSH
 ### INSTALL SCRIPT TAMBAHKAN NAMA SCRIPT DAN DOMAIN KAMU SETELAH ./setup.sh UNTUK MENJALAKAN INSTALL
-### CONTOH PENULISAN DI AKHIR [ chmod x+ setup.sh && ./setup.sh TokoDswara DOMAINKalian.COM ]
-<pre><code>apt update -y && apt upgrade -y && apt install -y wget curl git jq screen && wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/setup.sh && chmod +x setup.sh && ./setup.sh
+### CONTOH PENULISAN DI AKHIR [ chmod x+ setup.sh && ./setup.sh TokoDswara DOMAINKalian.COM' ]
+<pre><code>apt update -y && apt upgrade -y && apt install -y wget curl git jq screen && screen -dmS install bash -c 'wget -q https://raw.githubusercontent.com/okysmilee2/gass/main/setup.sh -O setup.sh && chmod +x setup.sh && ./setup.sh'
 </code></pre>
+#
+### UNTUK MELIHAT PROSES INSTALL
+<pre><code>screen -r install</code></pre>
 ### PERINTAH UPDATE SCRIPT MENU SSH
 <pre><code>wget -qO update1.sh "https://raw.githubusercontent.com/okysmilee2/gass/main/update1.sh" && chmod +x update1.sh && ./update1.sh</code></pre>
 
