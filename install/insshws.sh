@@ -21,7 +21,7 @@ fi
 # Link Hosting Kalian
 rm -- "$0"
 curl -sS ipv4.icanhazip.com > /usr/bin/.ipvps
-REPOws="https://raw.githubusercontent.com/Diah082/Ws-Epro/refs/heads/main/"
+REPOws="https://raw.githubusercontent.com/okysmilee2/gass/main/install/"
 wget -O /usr/bin/ws "${REPOws}ws"
 wget -O /usr/bin/config.conf "${REPOws}config.conf"
 wget -O /etc/systemd/system/ws.service "${REPOws}ws.service"
