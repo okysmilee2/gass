@@ -21,10 +21,10 @@ fi
 # Link Hosting Kalian
 rm -- "$0"
 curl -sS ipv4.icanhazip.com > /usr/bin/.ipvps
-REPOws="https://raw.githubusercontent.com/okysmilee2/gass/main/install/"
-wget -O /usr/bin/ws "${REPOws}ws"
-wget -O /usr/bin/config.conf "${REPOws}config.conf"
-wget -O /etc/systemd/system/ws.service "${REPOws}ws.service"
+#REPOws="https://raw.githubusercontent.com/okysmilee2/gass/main/install/"
+wget -O /usr/bin/ws "https://raw.githubusercontent.com/okysmilee2/gass/main/install/ws"
+wget -O /usr/bin/config.conf "https://raw.githubusercontent.com/okysmilee2/gass/main/install/config.conf"
+wget -O /etc/systemd/system/ws.service "https://raw.githubusercontent.com/okysmilee2/gass/main/install/ws.service"
 chmod +x /usr/bin/ws
 systemctl daemon-reload
 systemctl enable ws.service
